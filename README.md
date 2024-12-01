@@ -49,4 +49,4 @@ Ensure you have the following installed on your system:
 ### Installation
 1. Clone the repository:
    ```bash
-   git clone https://github.com/isaiful508/your-store-name-server.git
+   git clone [https://github.com/isaiful508/your-store-name-server.git](https://github.com/mizanurrahman70/Bi-Cycle-store.git)]
