@@ -1,26 +1,24 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { productService } from "./product.service";
+import { productValidationSchema } from "./product.validaton";
 
 // Create a product
-const createProduct = async (req: Request, res: Response): Promise<void> => {
+const createProduct = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const playLoad = req.body;
-    const result = await productService.createProduct(playLoad);
+    const validateProduct = productValidationSchema.parse(req.body);
+    const result = await productService.createProduct(validateProduct);
     res.status(201).json({
       message: "Product created successfully",
       data: result,
     });
   } catch (error) {
-    res.status(500).json({
-      message: "Failed to create product",
-      error,
-      success: false,
-    });
+    next(error);
   }
 };
 
+
 // Get all products
-const getAllProducts = async (req: Request, res: Response)=> {
+const getAllProducts = async (req: Request, res: Response,next:NextFunction)=> {
   try {
     const searchTerm = req.query.searchTerm as string;
     const products = await productService.getAllProducts(searchTerm);
@@ -30,32 +28,27 @@ const getAllProducts = async (req: Request, res: Response)=> {
       data: products,
     });
   } catch (error) {
-    res.status(500).json({
-      message: "Error retrieving products",
-      success: false,
-      error,
-    });
+    next(error)
   }
 };
 
 // Get a product by ID
-const getProductById = async (req: Request, res: Response) => {
+const getProductById = async (req: Request, res: Response,next:NextFunction)=> {
   try {
     const { productId } = req.params;
     const product = await productService.getProductById(productId);
-
     if (!product) {
-      return res.status(404).json({ message: "Product not found", success: false });
+      console.log(res.status(404).json({ message: "Product not found", success: false }));;
     }
 
     res.status(200).json({ message: "Product retrieved successfully", success: true, data: product });
   } catch (error) {
-    res.status(500).json({ message: "Error retrieving product", success: false, error });
+   next(error)
   }
 };
 
 // Update a product
-const updateProduct = async (req: Request, res: Response): Promise<void> => {
+const updateProduct = async (req: Request, res: Response,next:NextFunction): Promise<void> => {
   try {
     const productId = req.params.productId;
     const updates = req.body;
@@ -73,16 +66,12 @@ const updateProduct = async (req: Request, res: Response): Promise<void> => {
       });
     }
   } catch (error) {
-    res.status(400).json({
-      message: "Error updating product",
-      success: false,
-      error,
-    });
+ next(error)
   }
 };
 
 // Delete a product
-const deleteProduct = async (req: Request, res: Response): Promise<void> => {
+const deleteProduct = async (req: Request, res: Response,next:NextFunction): Promise<void> => {
   try {
     const productId = req.params.productId;
     const deletedProduct = await productService.deleteProduct(productId);
@@ -99,11 +88,7 @@ const deleteProduct = async (req: Request, res: Response): Promise<void> => {
       });
     }
   } catch (error) {
-    res.status(400).json({
-      message: "Error deleting product",
-      success: false,
-      error,
-    });
+  next(error)
   }
 };
 

@@ -1,30 +1,34 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { OrderServices } from "./order.service";
+import { orderValidationSchema } from "./order.validation";
+import mongoose from "mongoose";
 
 //create order
-const createOrder = async (req: Request, res: Response) => {
+const createOrder = async (req: Request, res: Response,next:NextFunction) => {
     {
         try {
-            const payload = req.body;
+            const validateOrder= orderValidationSchema.parse(req.body)
+            const productObjactId =new mongoose.Types.ObjectId(validateOrder.product)
+            console.log(productObjactId);
         
-            const result = await OrderServices.createOrder(payload);
+            const result = await OrderServices.createOrder({
+                ...validateOrder,
+                product: productObjactId,
+              });
 
             res.status(200).json({
                 message: 'Order created successfully',
                 status: true,
                 data: result,
             });
-        } catch (error: any) {
-            res.status(400).json({
-                message: error.message || 'Failed to place order',
-                status: false,
-            });
+        } catch (error) {
+            next(error)
         }
     }
 }
 
 //total revenue//
-const totalRevenue = async (req: Request, res: Response) => {
+const totalRevenue = async (req: Request, res: Response,next:NextFunction) => {
     try {
         const totalRevenue = await OrderServices.calculateRevenue();
         res.status(200).json({
@@ -32,11 +36,8 @@ const totalRevenue = async (req: Request, res: Response) => {
             status: true,
             data: { totalRevenue },
         });
-    } catch (error: any) {
-        res.status(500).json({
-            message: error.message || 'Failed to calculate revenue',
-            status: false,
-        });
+    } catch (error) {
+       next(error )
     }
 }
 
