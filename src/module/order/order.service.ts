@@ -6,7 +6,7 @@ import OrderModel from './order.model';
 const createOrder = async (orderDetails: Order) => {
 
   const { email, product, quantity, totalPrice } = orderDetails;
-  console.log({ orderDetails });
+
   // Fetch the product
   const productData = await ProductModel.findById(product);
   if (!productData) {
