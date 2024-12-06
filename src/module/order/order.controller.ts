@@ -5,8 +5,10 @@ import { OrderServices } from "./order.service";
 const createOrder = async (req: Request, res: Response) => {
     {
         try {
-            const payload = req.body.data;
+            const payload = req.body;
+            console.log('hit korso ni',payload);
             const result = await OrderServices.createOrder(payload);
+            console.log(result);
             res.status(200).json({
                 message: 'Order created successfully',
                 status: true,
