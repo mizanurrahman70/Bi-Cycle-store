@@ -23,7 +23,7 @@ const createOrder = async (req: Request, res: Response) => {
     }
 }
 
-//total revenue
+//total revenue//
 const totalRevenue = async (req: Request, res: Response) => {
     try {
         const totalRevenue = await OrderServices.calculateRevenue();
