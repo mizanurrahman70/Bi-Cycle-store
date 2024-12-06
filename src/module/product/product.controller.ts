@@ -23,9 +23,7 @@ const createProduct = async (req: Request, res: Response): Promise<void> => {
 const getAllProducts = async (req: Request, res: Response)=> {
   try {
     const searchTerm = req.query.searchTerm as string;
-    console.log("serch",searchTerm);
     const products = await productService.getAllProducts(searchTerm);
-    console.log(products);
     res.status(200).json({
       message: "Products retrieved successfully",
       success: true,
@@ -45,7 +43,6 @@ const getProductById = async (req: Request, res: Response) => {
   try {
     const { productId } = req.params;
     const product = await productService.getProductById(productId);
-    console.log(product);
 
     if (!product) {
       return res.status(404).json({ message: "Product not found", success: false });
@@ -63,7 +60,6 @@ const updateProduct = async (req: Request, res: Response): Promise<void> => {
     const productId = req.params.productId;
     const updates = req.body;
     const updatedProduct = await productService.updateProduct(productId, updates);
-    console.log(updatedProduct);
     if (updatedProduct) {
       res.status(200).json({
         message: "Product updated successfully",
@@ -90,7 +86,6 @@ const deleteProduct = async (req: Request, res: Response): Promise<void> => {
   try {
     const productId = req.params.productId;
     const deletedProduct = await productService.deleteProduct(productId);
-    console.log(deletedProduct);
     if (deletedProduct) {
       res.status(200).json({
         message: "Product deleted successfully",
